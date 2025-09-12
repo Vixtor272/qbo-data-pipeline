@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_DB: qbo_raw_db
+      POSTGRES_USER: qbo_user
+      POSTGRES_PASSWORD: qbo_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d  
+    networks:
+      - qbo_net
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin_data:/var/lib/pgadmin
+    networks:
+      - qbo_net
+    restart: unless-stopped
+
+  mage:
+    image: mageai/mageai:latest
+    container_name: mage
+    environment:
+      MAGE_DATABASE_CONNECTION_URL: postgresql+psycopg2://qbo_user:qbo_password@postgres:5432/qbo_raw_db
+    ports:
+      - "6789:6789"
+    volumes:
+      - ./mage_data:/home/src
+    depends_on:
+      - postgres
+    networks:
+      - qbo_net
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  pgadmin_data:
+
+networks:
+  qbo_net:
+    driver: bridge
+

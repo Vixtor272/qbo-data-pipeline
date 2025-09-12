@@ -1,0 +1,19 @@
+variables:
+  - name: fecha_inicio
+    type: string
+    default: "2024-01-01T00:00:00Z"
+    description: "ISO UTC start"
+  - name: fecha_fin
+    type: string
+    default: "2024-01-31T00:00:00Z"
+    description: "ISO UTC end"
+  - name: chunk_size_days
+    type: integer
+    default: 1
+    description: "Tamaño del tramo en días (1 o 7)"
+  - name: page_size
+    type: integer
+    default: 100
+  - name: entity
+    type: string
+    default: "Invoice"
